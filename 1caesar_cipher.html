@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<head>
+    <title>+-1 Caesar Cipher Encrypter/Decrypter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Didact+Gothic" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+    <script src="https://unpkg.com/vue@2.1.10/dist/vue.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+</head>
+<style>
+    html {
+        height: 100%;
+        font-family: 'Didact Gothic', sans-serif;
+    }
+    body {
+        background-color: #212121;
+        color: floralwhite;
+        height: 100%;
+    }
+
+    .fill {
+        width: 100%;
+        height: 100%;
+        background-position: center;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+        -o-background-size: cover;
+    }
+
+    .flex-container {
+        display: flex;
+    }
+
+    .flex-item {
+        margin: auto;
+        width: 90%;
+        align-items: stretch;
+    }
+
+    .tabs-vertical .tabs {
+        height: auto;
+        -ms-flex-direction: column;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        display: -webkit-flex;
+        display: flex;
+        background-color: rgba(0,0,0,0);
+    }
+    .tabs-vertical .tab {
+        width: 100%;
+    }
+    .tabs-vertical .tab .active {
+        -moz-transition: border-color .5s ease;
+        -o-transition: border-color .5s ease;
+        -webkit-transition: border-color .5s ease;
+        transition: border-color .5s ease;
+        border-right: 3px solid #424242;
+    }
+    .tabs-vertical .tab :hover {
+        border-right: 3px solid #eeeeee;
+    }
+    .tabs-vertical .indicator {
+        display: none;
+    }
+</style>
+<body>
+    <div class="container fill flex-container">
+        <div class="flex-item">
+            <div class="row">
+                <div class="col m6 offset-m3 s8 offset-s2">
+                    <h1 class="center-align">Caesar Cipher</h1>
+                </div>
+            </div>
+            <div id="app" class="row">
+                <div class="col m4 s12 flex-container">
+                    <div class="tabs-vertical flex-item">
+                        <ul id="chooser" class="tabs">
+                            <li id="decrypt" class="tab">
+                                <a class="active" href="#decrypt-output">Decrypt</a>
+                            </li>
+                            <li id="encrypt" class="tab">
+                                <a href="#encrypt-output">Encrypt</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col m4 s12">
+                    <h5 class="center-align" style="color: #26a69a">Input</h5>
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input id="input_text" type="text" data-length="200" v-model="message">
+                                <label for="input">Type here...</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="decrypt-output" class="col m4 s12">
+                    <h5 class="center-align" style="color: #ffe082">Decrypted Message</h5>
+                    <p>{{ decryptedMessage }}</p>
+                </div>
+                <div id="encrypt-output" class="col m4 s12">
+                    <h5 class="center-align" style="color: #ffe082">Encrypted Message</h5>
+                    <p>{{ encryptedMessage }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: ''
+        },
+        computed: {
+            decryptedMessage: function() {
+                var str = '';
+                for(var i=0;i<this.message.length;i++) {
+                    var alphabet_ascii = this.message.charCodeAt(i);
+                    if((alphabet_ascii>=65&&alphabet_ascii<=90)||(alphabet_ascii>=97&&alphabet_ascii<=122)) {
+                        if(alphabet_ascii==65) {
+                            str += String.fromCharCode(90);
+                        } else if(alphabet_ascii==97) {
+                            str += String.fromCharCode(122);
+                        } else {
+                            str += String.fromCharCode(alphabet_ascii-1);
+                        }
+                    } else {
+                        str += String.fromCharCode(alphabet_ascii);
+                    }
+                }
+                return str;
+            },
+            encryptedMessage: function() {
+                var str = '';
+                for(var i=0;i<this.message.length;i++) {
+                    var alphabet_ascii = this.message.charCodeAt(i);
+                    if((alphabet_ascii>=65&&alphabet_ascii<=90)||(alphabet_ascii>=97&&alphabet_ascii<=122)) {
+                        if(alphabet_ascii==90) {
+                            str += String.fromCharCode(65);
+                        } else if(alphabet_ascii==122) {
+                            str += String.fromCharCode(97);
+                        } else {
+                            str += String.fromCharCode(alphabet_ascii+1);
+                        }
+                    } else {
+                        str += String.fromCharCode(alphabet_ascii);
+                    }
+                }
+                return str;
+            }
+        }
+    })
+</script>
