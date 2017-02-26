@@ -2,7 +2,7 @@
 Caesar Cipher Web Application<br>
 Support custom number of letters shifted encryption/decryption.
 
-#### Example : Set <code>Decryption Offset</code> = -1 
+#### Example : Set <code>Decrypt by character ID</code> -1 
 * In decryption : zpv -> you
 * In encryption : you -> zpv
 
