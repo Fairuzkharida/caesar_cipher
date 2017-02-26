@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<head>
+    <title>+-1 Caesar Cipher Encrypter/Decrypter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Didact+Gothic" rel="stylesheet">
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/vue@2.1.10/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+</head>
+<style>
+    html {
+        height: 100%;
+    }
+    body {
+        background-color: #212121;
+        color: floralwhite;
+        height: 100%;
+        font-family: 'Didact Gothic', sans-serif;
+    }
+
+    .fill {
+        width: 100%;
+        height: 100%;
+        background-position: center;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        background-size: cover;
+        -o-background-size: cover;
+    }
+
+    .flex-container {
+        display: flex;
+    }
+
+    .flex-item {
+        margin: auto;
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .tabs-vertical .tabs {
+        height: auto;
+        -ms-flex-direction: column;
+        -webkit-flex-direction: column;
+        flex-direction: column;
+        display: -webkit-flex;
+        display: flex;
+        background-color: rgba(0,0,0,0);
+    }
+    .tabs-vertical .tab {
+        width: 100%;
+    }
+    .tabs-vertical .tab .active {
+        -moz-transition: border-color .5s ease;
+        -o-transition: border-color .5s ease;
+        -webkit-transition: border-color .5s ease;
+        transition: border-color .5s ease;
+        border-right: 3px solid #424242;
+    }
+    .tabs-vertical .tab :hover {
+        border-right: 3px solid #eeeeee;
+    }
+    .tabs-vertical .indicator {
+        display: none;
+    }
+
+    .p-wrapper {
+        padding: 15px;
+        word-wrap: break-word;
+    }
+    #offset-setting {
+        padding: 15px;
+    }
+</style>
+<body>
+    <div class="container fill flex-container">
+        <div id="app" class="flex-item">
+            <div class="row">
+                <div class="col m6 offset-m3 s8 offset-s2">
+                    <h1 class="center-align">Caesar Cipher</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col m4 s12 flex-container">
+                    <div class="tabs-vertical flex-item">
+                        <ul id="chooser" class="tabs">
+                            <li id="decrypt" class="tab">
+                                <a class="active" href="#decrypt-output">Decrypt</a>
+                            </li>
+                            <li id="encrypt" class="tab">
+                                <a href="#encrypt-output">Encrypt</a>
+                            </li>
+                        </ul>
+                        <div id="offset-setting" class="row">
+                            <form class="col s12">
+                                <div class="row">
+                                    <div class="col s2">
+                                        <a class="btn-floating waves-effect waves-light red lighten-1" v-on:click="offset -= 1"><i class="material-icons">chevron_left</i></a>
+                                    </div>
+                                    <div class="col s6">
+                                        <h6 class="center-align" v-if="offset < 0">Decrypt by character ID {{ offset }}</h6>
+                                        <h6 class="center-align" v-else-if="offset === 0">No Decryption</h6>
+                                        <h6 class="center-align" v-else-if="offset > 0">Decrypt by character ID +{{ offset }}</h6>
+                                    </div>
+                                    <div class="col s2">
+                                        <a class="btn-floating waves-effect waves-light red lighten-1" v-on:click="offset += 1"><i class="material-icons">chevron_right</i></a>
+                                    </div>
+                                    <div class="col s2">
+                                        <a class="btn-floating waves-effect waves-light red lighten-1" v-on:click="offset = -1"><i class="material-icons">replay</i></a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col m4 s12">
+                    <h5 class="center-align" style="color: #26a69a">Input</h5>
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col s11">
+                                <input id="input_text" type="text" data-length="200" v-model="message">
+                                <label for="input">Type here...</label>
+                            </div>
+                            <div class="col s1">
+                                <a class="btn-floating waves-effect waves-light" v-on:click="message = ''"><i class="material-icons">clear</i></a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="decrypt-output" class="col m4 s12">
+                    <h5 class="center-align" style="color: #ffe082">Decrypted Message</h5>
+                    <p class="p-wrapper">{{ decryptedMessage }}</p>
+                </div>
+                <div id="encrypt-output" class="col m4 s12">
+                    <h5 class="center-align" style="color: #ffe082">Encrypted Message</h5>
+                    <p class="p-wrapper">{{ encryptedMessage }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Zpv boe nf.',
+            offset: -1,
+        },
+        computed: {
+            decryptedMessage: function() {
+                var str = '';
+                for(var i=0;i<this.message.length;i++) {
+                    var alphabet_ascii = this.message.charCodeAt(i);
+                    if((alphabet_ascii>=65&&alphabet_ascii<=90)||(alphabet_ascii>=97&&alphabet_ascii<=122)) {
+                        /*if(alphabet_ascii==65) {
+                            str += String.fromCharCode(90);
+                        } else if(alphabet_ascii==97) {
+                            str += String.fromCharCode(122);
+                        } else {
+                            str += String.fromCharCode(alphabet_ascii-1);
+                        }*/
+                        var tmp = alphabet_ascii + this.realOffset;
+                        if((tmp > 90 && tmp < 91+this.realOffset) || tmp > 122) {
+                            str += String.fromCharCode(tmp-26);
+                        } else {
+                            str += String.fromCharCode(tmp);
+                        }
+                    } else {
+                        str += String.fromCharCode(alphabet_ascii);
+                    }
+                }
+                return str;
+            },
+            encryptedMessage: function() {
+                var str = '';
+                for(var i=0;i<this.message.length;i++) {
+                    var alphabet_ascii = this.message.charCodeAt(i);
+                    if((alphabet_ascii>=65&&alphabet_ascii<=90)||(alphabet_ascii>=97&&alphabet_ascii<=122)) {
+                        /*if(alphabet_ascii==90) {
+                            str += String.fromCharCode(65);
+                        } else if(alphabet_ascii==122) {
+                            str += String.fromCharCode(97);
+                        } else {
+                            str += String.fromCharCode(alphabet_ascii+1);
+                        }*/
+                        var tmp = alphabet_ascii - this.realOffset;
+                        if((tmp > 96-this.realOffset && tmp < 97) || tmp < 65) {
+                            str += String.fromCharCode(tmp+26);
+                        } else {
+                            str += String.fromCharCode(tmp);
+                        }
+                    } else {
+                        str += String.fromCharCode(alphabet_ascii);
+                    }
+                }
+                return str;
+            },
+            realOffset: function() {
+                if(this.offset < 0) {
+                    return 26 + this.offset;
+                } else {
+                    return this.offset;
+                }
+            },
+        },
+        watch: {
+            offset: function(val) {
+                if(val > 12) {
+                    this.offset = 12;
+                } else if (val < -13) {
+                    this.offset = -13;
+                }
+            },
+        }
+    })
+</script>
