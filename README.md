@@ -1,4 +1,4 @@
-# caesar_cipher
+# Caesar_Cipher
 Caesar Cipher Web Application<br>
 Support custom number of letters shifted encryption/decryption.
 
